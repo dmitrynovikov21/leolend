@@ -1,0 +1,27 @@
+{
+    "Navigation": {
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "pricing": "Pricing",
+        "login": "Login",
+        "getStarted": "Get Started"
+    },
+    "Common": {
+        "welcome": "Welcome back",
+        "active": "Active",
+        "paused": "Paused",
+        "training": "Training",
+        "actions": "Actions",
+        "delete": "Delete"
+    },
+    "Agents": {
+        "title": "Active Agents",
+        "description": "Manage your digital workforce and monitor their performance.",
+        "noAgents": "No agents found",
+        "noAgentsDesc": "You haven't hired any digital employees yet.",
+        "manage": "Manage",
+        "chats": "Chats",
+        "on": "On",
+        "off": "Off"
+    }
+}
