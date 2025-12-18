@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 
 import { fontGeistSans, fontGeistMono, fontHeading, fontSans, fontUrban } from "@/assets/fonts";
 import { SessionProvider } from "next-auth/react";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 
@@ -38,7 +38,7 @@ export default async function RootLayout({ children, params: { locale } }: RootL
         <SessionProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >

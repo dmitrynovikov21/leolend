@@ -23,7 +23,7 @@ const SOURCES: SourceCard[] = [
     {
         id: 'telegram',
         title: 'Telegram Бот',
-        description: 'Подключите своего агента к Telegram-боту для автоматической обработки запросов поддержки.',
+        description: 'Подключите своих агентов к Telegram-боту для автоматической обработки запросов поддержки.',
         icon: Send,
         status: 'active',
         connected: false, // Mock state
@@ -48,23 +48,21 @@ const SOURCES: SourceCard[] = [
     {
         id: 'jivo',
         title: 'JivoChat',
-        description: 'Встройте AI-агента в виджет на сайте для ответов на вопросы посетителей 24/7.',
+        description: 'Встройте AI-агентов в виджет на сайте для ответов на вопросы посетителей 24/7.',
         icon: MessageCircle,
         status: 'coming_soon',
         color: 'text-orange-500'
     }
 ]
 
-export default function SourcesPage({ params }: { params: { agentId: string } }) {
-    const t = useTranslations('Agents') // Assuming we might add translations later, defaulting to English strings for now as per prompt mockup
-
+export default function SourcesPage() {
     return (
-        <div className="space-y-6 max-w-5xl">
+        <div className="space-y-6 max-w-5xl p-6">
             {/* Page Header */}
             <div>
                 <h2 className="text-2xl font-bold tracking-tight text-zinc-900">Источники коммуникации</h2>
                 <p className="text-muted-foreground mt-1">
-                    Подключите агента к платформам, где находятся ваши клиенты.
+                    Управление подключенными каналами для всех ваших агентов.
                 </p>
             </div>
 

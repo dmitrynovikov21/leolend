@@ -7,21 +7,37 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Legend, Tooltip } from "recha
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 // Channel colors
-const COLORS = {
+import { TrafficSourceData } from "@/lib/data/types"
+
+// Channel colors
+const COLORS: Record<string, string> = {
     whatsapp: "#25D366",
     telegram: "#0088cc",
     web: "#6366f1",
+    // Fallback colors for other sources
+    other: "#a1a1aa"
 }
 
-// Mock data
-const mockTrafficData = [
-    { name: "WhatsApp", value: 45, color: COLORS.whatsapp },
-    { name: "Telegram", value: 35, color: COLORS.telegram },
-    { name: "Web Widget", value: 20, color: COLORS.web },
-]
+// Helper to normalize name to key
+const getColor = (name: string) => {
+    const key = name.toLowerCase().includes('whatsapp') ? 'whatsapp' :
+        name.toLowerCase().includes('telegram') ? 'telegram' :
+            name.toLowerCase().includes('web') ? 'web' : 'other'
+    return COLORS[key]
+}
 
-export function TrafficSourceChart() {
+interface TrafficSourceChartProps {
+    data?: TrafficSourceData[]
+}
+
+export function TrafficSourceChart({ data = [] }: TrafficSourceChartProps) {
     const t = useTranslations('Dashboard')
+
+    // Add color to data
+    const chartData = data.map(item => ({
+        ...item,
+        color: getColor(item.name)
+    }))
 
     return (
         <Card className="bg-white border border-zinc-200/50 shadow-[0_2px_8px_rgba(0,0,0,0.04)] rounded-2xl">
@@ -33,7 +49,7 @@ export function TrafficSourceChart() {
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
-                                data={mockTrafficData}
+                                data={chartData}
                                 cx="50%"
                                 cy="45%"
                                 innerRadius={60}
@@ -41,7 +57,7 @@ export function TrafficSourceChart() {
                                 paddingAngle={2}
                                 dataKey="value"
                             >
-                                {mockTrafficData.map((entry, index) => (
+                                {chartData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                             </Pie>

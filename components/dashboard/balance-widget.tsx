@@ -7,8 +7,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
+import { useUser } from "@/components/providers/user-data-provider"
+
 interface BalanceWidgetProps {
-    balance: number
+    balance?: number
     currency?: string
     lowBalanceThreshold?: number
     compactMode?: boolean
@@ -21,8 +23,13 @@ export function BalanceWidget({
     compactMode = false,
 }: BalanceWidgetProps) {
     const t = useTranslations('Billing');
-    const isLowBalance = balance < lowBalanceThreshold
-    const runwayDays = Math.floor(balance / 50) // Mock calculation: ~50₽ per day
+    const { userData } = useUser()
+
+    // Use prop if provided, otherwise fall back to user data
+    const currentBalance = balance ?? userData?.profile.balance ?? 0
+
+    const isLowBalance = currentBalance < lowBalanceThreshold
+    const runwayDays = Math.floor(currentBalance / 50) // Mock calculation
 
     if (compactMode) {
         return (
@@ -45,7 +52,7 @@ export function BalanceWidget({
                                     isLowBalance && "text-destructive"
                                 )}
                             >
-                                {currency} {balance.toLocaleString()}
+                                {currency} {currentBalance.toLocaleString()}
                             </p>
                         </div>
                     </div>
@@ -68,7 +75,7 @@ export function BalanceWidget({
                                     isLowBalance && "text-destructive"
                                 )}
                             >
-                                {currency} {balance.toLocaleString()}
+                                {currency} {currentBalance.toLocaleString()}
                             </p>
                         </div>
                         {isLowBalance && (

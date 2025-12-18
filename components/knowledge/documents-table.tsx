@@ -67,9 +67,7 @@ export function DocumentsTable({ onInspect, onRowClick, docs }: DocumentsTablePr
                             <TableCell className="font-medium">
                                 <div className="flex items-center gap-3">
                                     <div className={cn(
-                                        "p-2.5 rounded-xl bg-zinc-100 text-zinc-500 group-hover:bg-white group-hover:shadow-sm transition-all border border-transparent group-hover:border-zinc-200/50",
-                                        doc.type === 'spreadsheet' && "bg-green-50 text-green-600 group-hover:bg-green-50 group-hover:border-green-100",
-                                        doc.type === 'folder' && "bg-blue-50 text-blue-600 group-hover:bg-blue-50 group-hover:border-blue-100"
+                                        "p-2.5 rounded-xl bg-transparent text-zinc-500 group-hover:bg-white group-hover:shadow-sm transition-all border border-transparent group-hover:border-zinc-200/50"
                                     )}>
                                         {doc.type === 'spreadsheet' ? <Sheet size={16} /> : doc.type === 'folder' ? <Folder size={16} fill="currentColor" className="opacity-50" /> : <FileText size={16} />}
                                     </div>
@@ -96,11 +94,11 @@ export function DocumentsTable({ onInspect, onRowClick, docs }: DocumentsTablePr
                             </TableCell>
                             <TableCell className="text-zinc-500 text-sm font-mono">{doc.size}</TableCell>
                             <TableCell>
-                                <Badge variant={doc.status === 'indexed' ? 'default' : 'secondary'} className={cn(
+                                <Badge variant={doc.status === 'ready' ? 'default' : 'secondary'} className={cn(
                                     "rounded-lg px-2 py-0.5 font-medium text-xs shadow-none border",
-                                    doc.status === 'indexed' ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                                    doc.status === 'ready' ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
                                 )}>
-                                    {doc.status === 'indexed' ? 'Индексирован' : 'Обработка'}
+                                    {doc.status === 'ready' ? 'Индексирован' : 'Обработка'}
                                 </Badge>
                             </TableCell>
                             <TableCell className="text-right">

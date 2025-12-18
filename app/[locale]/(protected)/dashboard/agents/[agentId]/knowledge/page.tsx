@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
-import { Settings2, UploadCloud, Zap, Table as TableIcon, Sparkles, Filter, Lock } from "lucide-react"
+import { Settings2, UploadCloud, Zap, Table as TableIcon, Sparkles, Filter, Lock, Check } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,6 +13,18 @@ import { DocumentsTable } from "@/components/knowledge/documents-table"
 import { UploadDialog } from "@/components/knowledge/upload-dialog"
 import { NoteEditorDialog } from "@/components/knowledge/note-editor-dialog"
 import { FileEditorDialog } from "@/components/knowledge/file-editor-dialog"
+import { TableEditorDialog } from "@/components/knowledge/table-editor-dialog"
+import { toast } from "sonner"
+import { mockDocuments } from "@/mocks/documents"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib/utils"
 
 export default function KnowledgePage({ params }: { params: { agentId: string } }) {
     const t = useTranslations('Knowledge')
@@ -38,7 +50,40 @@ export default function KnowledgePage({ params }: { params: { agentId: string } 
 
     const [editingNote, setEditingNote] = React.useState<any>(null)
     const [editingFile, setEditingFile] = React.useState<any>(null)
+    const [editingTable, setEditingTable] = React.useState<any>(null)
     const [isCreateOpen, setIsCreateOpen] = React.useState(false)
+    const [searchQuery, setSearchQuery] = React.useState("")
+    const [filterType, setFilterType] = React.useState<'all' | 'folder' | 'document' | 'spreadsheet' | 'note'>('all')
+
+    const filteredDocs = React.useMemo(() => {
+        let docs = mockDocuments
+
+        // Search filter
+        if (searchQuery) {
+            docs = docs.filter(doc =>
+                doc.name.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        }
+
+        // Type filter
+        if (filterType !== 'all') {
+            docs = docs.filter(doc => {
+                if (filterType === 'document') return ['pdf', 'docx', 'txt'].includes(doc.type)
+                if (filterType === 'note') return ['md'].includes(doc.type)
+                return doc.type === filterType
+            })
+        }
+
+        return docs
+    }, [searchQuery, filterType])
+
+    const handleFileOpen = (doc: any) => {
+        if (doc.type === 'spreadsheet') {
+            setEditingTable(doc)
+        } else {
+            setEditingFile(doc)
+        }
+    }
 
     const handleCreate = (newNote: any) => {
         setNotes([...notes, { ...newNote, id: Date.now() }])
@@ -59,12 +104,17 @@ export default function KnowledgePage({ params }: { params: { agentId: string } 
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <SpaceSelector />
-                        <Button variant="ghost" size="sm" className="h-8 text-muted-foreground">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 text-muted-foreground"
+                            onClick={() => toast("Скоро будет доступно", { description: "Функция создания пространств в разработке" })}
+                        >
                             <UploadCloud className="mr-2 h-4 w-4" /> Новое пространство
                         </Button>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground px-1 mt-3">
                     <span>15 Файлов</span>
                     <span>•</span>
                     <span>3 Важные заметки</span>
@@ -97,9 +147,9 @@ export default function KnowledgePage({ params }: { params: { agentId: string } 
                     }
                 />
 
-                <Button variant="outline" className="text-muted-foreground">
+                <Button variant="outline" className="text-muted-foreground opacity-90" disabled>
                     <TableIcon className="mr-2 h-4 w-4" />
-                    Подключить таблицу
+                    Подключить таблицу (Скоро)
                 </Button>
             </div>
 
@@ -148,19 +198,50 @@ export default function KnowledgePage({ params }: { params: { agentId: string } 
                             <Input
                                 placeholder="Поиск файлов..."
                                 className="h-9 w-[240px] border-0 shadow-sm bg-muted/20 focus-visible:bg-muted/30 pl-3"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <Button variant="outline" size="sm" className="h-9 border-0 shadow-sm bg-muted/20 hover:bg-muted/30 text-muted-foreground">
-                            <Filter size={14} className="mr-2" /> Фильтр
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" size="sm" className="h-9 border-0 shadow-sm bg-muted/20 hover:bg-muted/30 text-muted-foreground">
+                                    <Filter size={14} className="mr-2" /> Фильтр
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-[180px]">
+                                <DropdownMenuLabel>Тип содержимого</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => setFilterType('all')}>
+                                    <Check className={cn("mr-2 h-4 w-4", filterType === 'all' ? "opacity-100" : "opacity-0")} />
+                                    Все
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setFilterType('folder')}>
+                                    <Check className={cn("mr-2 h-4 w-4", filterType === 'folder' ? "opacity-100" : "opacity-0")} />
+                                    Папки
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setFilterType('document')}>
+                                    <Check className={cn("mr-2 h-4 w-4", filterType === 'document' ? "opacity-100" : "opacity-0")} />
+                                    Документы
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setFilterType('spreadsheet')}>
+                                    <Check className={cn("mr-2 h-4 w-4", filterType === 'spreadsheet' ? "opacity-100" : "opacity-0")} />
+                                    Таблицы
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setFilterType('note')}>
+                                    <Check className={cn("mr-2 h-4 w-4", filterType === 'note' ? "opacity-100" : "opacity-0")} />
+                                    Заметки
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
 
                 {/* Scrollable Table Area */}
                 <div className="rounded-md border-0 bg-background/50 flex-1 overflow-hidden">
                     <DocumentsTable
-                        onRowClick={(doc) => setEditingFile(doc)}
-                        onInspect={(doc) => setEditingFile(doc)}
+                        docs={filteredDocs}
+                        onRowClick={handleFileOpen}
+                        onInspect={handleFileOpen}
                     />
                 </div>
             </div>
@@ -174,6 +255,17 @@ export default function KnowledgePage({ params }: { params: { agentId: string } 
                     console.log(`Saving content for file ${id}:`, content)
                     setEditingFile(null)
                     // In real app, update file content via API
+                }}
+            />
+
+            {/* Table Editor Dialog */}
+            <TableEditorDialog
+                open={!!editingTable}
+                onOpenChange={(open) => !open && setEditingTable(null)}
+                file={editingTable}
+                onSave={(id, data) => {
+                    console.log(`Saving table ${id}:`, data)
+                    setEditingTable(null)
                 }}
             />
         </div>

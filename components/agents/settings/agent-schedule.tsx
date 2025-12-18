@@ -148,7 +148,7 @@ export function AgentSchedule() {
                     </div>
                     <Card className="border border-zinc-200/50 shadow-[0_2px_8px_rgba(0,0,0,0.04)] bg-white rounded-2xl">
                         <CardContent className="p-4 space-y-4">
-                            <div className="flex items-center justify-between bg-zinc-50 p-3 rounded-xl border border-zinc-100">
+                            <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-zinc-100">
                                 <Label htmlFor="auto-reply" className="font-medium text-zinc-900">Авто-ответ</Label>
                                 <Switch id="auto-reply" defaultChecked className="data-[state=checked]:bg-zinc-900" />
                             </div>
@@ -169,7 +169,7 @@ export function AgentSchedule() {
                     </div>
                     <Card className="border border-zinc-200/50 shadow-[0_2px_8px_rgba(0,0,0,0.04)] bg-white rounded-2xl h-[calc(100%-76px)]">
                         <CardContent className="p-4 h-full">
-                            <div className="p-8 border-2 border-dashed border-zinc-200 rounded-xl text-center h-full flex flex-col items-center justify-center bg-zinc-50/50">
+                            <div className="p-8 border-2 border-dashed border-zinc-200 rounded-xl text-center h-full flex flex-col items-center justify-center bg-white">
                                 <p className="text-sm text-zinc-500 font-medium mb-4">Нет добавленных праздников.</p>
                                 <Button variant="outline" size="sm" className="rounded-xl border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 font-medium shadow-sm">Добавить дату</Button>
                             </div>

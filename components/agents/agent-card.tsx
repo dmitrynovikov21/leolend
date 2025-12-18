@@ -1,6 +1,6 @@
 "use client"
 
-import { Play, Settings, MessageSquare, Coins, Bot } from "lucide-react"
+import { Play, Settings, MessageSquare, Bot } from "lucide-react"
 import { EmojiAvatar } from "@/components/shared/emoji-avatar"
 import { Link } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ChannelIcon } from "@/components/agents/channel-icon"
 import { cn } from "@/lib/utils"
-import type { Agent } from "@/mocks/agents"
+import type { Agent } from "@/lib/data/types"
 
 interface AgentCardProps {
     agent: Agent

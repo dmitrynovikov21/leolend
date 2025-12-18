@@ -14,9 +14,20 @@ import {
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { EmojiAvatar } from "@/components/shared/emoji-avatar"
 import { useUserPreferences } from "@/components/providers/user-preferences-provider"
+import { useUser } from "@/components/providers/user-data-provider"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function ProfileTab() {
     const { avatar, setAvatar } = useUserPreferences()
+    const { userData, isLoading } = useUser()
+
+    if (isLoading) {
+        return <div className="space-y-4">
+            <Skeleton className="h-[200px] w-full rounded-2xl" />
+        </div>
+    }
+
+    const { name, role, email } = userData?.profile || { name: '', role: '', email: '' }
 
     return (
         <Card className="border border-zinc-200/50 shadow-[0_2px_8px_rgba(0,0,0,0.04)] bg-white rounded-2xl">
@@ -40,7 +51,7 @@ export function ProfileTab() {
                             />
                             <Input
                                 id="fullname"
-                                defaultValue="Dima Novikov"
+                                defaultValue={name}
                                 className="flex-1 h-11 rounded-xl border-transparent bg-zinc-100/50 focus:bg-white focus:ring-2 focus:ring-zinc-200 transition-all font-medium text-zinc-900"
                             />
                         </div>
@@ -50,7 +61,7 @@ export function ProfileTab() {
                         <Label htmlFor="role" className="text-zinc-700 font-medium">Должность</Label>
                         <Input
                             id="role"
-                            defaultValue="Frontend Engineer"
+                            defaultValue={role}
                             className="h-11 rounded-xl border-transparent bg-zinc-100/50 focus:bg-white focus:ring-2 focus:ring-zinc-200 transition-all font-medium text-zinc-900"
                         />
                     </div>
@@ -87,7 +98,7 @@ export function ProfileTab() {
                         <Label htmlFor="email" className="text-zinc-700 font-medium">Email</Label>
                         <Input
                             id="email"
-                            value="dima@example.com"
+                            value={email}
                             disabled
                             className="h-11 rounded-xl border-zinc-200 bg-zinc-50/50 text-zinc-500 font-mono"
                         />

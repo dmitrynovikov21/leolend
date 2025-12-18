@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname, useParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { Bot, LineChart, MessageSquare, Settings, Sparkles, Wifi } from "lucide-react"
+import { EmojiAvatar } from "@/components/shared/emoji-avatar"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -66,9 +67,13 @@ export default function AgentLayout({ children }: AgentLayoutProps) {
             {/* Agent Context Header */}
             <div className="flex items-center justify-between border-b border-zinc-200/50 px-6 py-3">
                 <div className="flex items-center gap-4">
-                    {/* Simple Avatar Placeholder */}
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <Bot className="h-6 w-6" />
+                    {/* Emoji Avatar */}
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl">
+                        <EmojiAvatar
+                            value="🤖"
+                            size="lg"
+                            className="text-3xl"
+                        />
                     </div>
                     <div>
                         <h2 className="text-lg font-semibold tracking-tight">Oleg HR</h2>
@@ -81,9 +86,7 @@ export default function AgentLayout({ children }: AgentLayoutProps) {
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm">
-                        {t('deploy')}
-                    </Button>
+                    {/* Button removed as per request */}
                 </div>
             </div>
 

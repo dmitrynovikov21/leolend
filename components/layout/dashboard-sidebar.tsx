@@ -182,7 +182,7 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
 
               <div className="mt-auto p-4">
                 {isSidebarExpanded ? (
-                  <BalanceWidget balance={1250} compactMode={true} />
+                  <BalanceWidget compactMode={true} />
                 ) : null}
               </div>
             </div>
@@ -273,7 +273,7 @@ export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
                 ))}
 
                 <div className="mt-auto">
-                  <BalanceWidget balance={1250} compactMode={false} />
+                  <BalanceWidget compactMode={false} />
                 </div>
               </nav>
             </div>

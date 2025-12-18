@@ -15,13 +15,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUser } from "@/components/providers/user-data-provider";
 import { UserAvatar } from "@/components/shared/user-avatar";
 
 import { useUserPreferences } from "@/components/providers/user-preferences-provider";
 
 export function UserAccountNav() {
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { userData, isLoading, switchUser } = useUser();
+  const user = userData ? {
+    name: userData.profile.name,
+    email: userData.profile.email,
+    role: userData.profile.role,
+    image: userData.profile.avatar
+  } : null;
+
   const { avatar } = useUserPreferences();
 
   const [open, setOpen] = useState(false);
@@ -158,6 +165,14 @@ export function UserAccountNav() {
             <LayoutDashboard className="size-4" />
             <p className="text-sm">Dashboard</p>
           </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => switchUser('user_001')} className="cursor-pointer">
+          <User className="mr-2 h-4 w-4" /> Switch to User 1
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => switchUser('user_002')} className="cursor-pointer">
+          <User className="mr-2 h-4 w-4" /> Switch to User 2
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
