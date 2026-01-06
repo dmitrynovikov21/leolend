@@ -36,14 +36,14 @@ export default function ReferralSection() {
     }
 
     return (
-        <section className="py-24 bg-black">
+        <section className="py-24">
             <div className="max-w-7xl mx-auto px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                     viewport={{ once: true }}
-                    className="rounded-[2.5rem] overflow-hidden bg-zinc-900 relative isolate"
+                    className="rounded-[2.5rem] overflow-hidden bg-black relative isolate"
                 >
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 p-12 lg:p-16">
                         {/* Left Column: Text + Form */}

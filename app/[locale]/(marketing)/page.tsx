@@ -6,7 +6,7 @@ import UseCasesSection from "@/components/sections/use-cases-section";
 import PlatformFeatures from "@/components/sections/platform-features"
 import BentoGrid from "@/components/sections/bento-grid"
 import AdvancedSettings from "@/components/sections/advanced-settings"
-import ReferralSection from "@/components/sections/referral-section"
+
 import PartnersSection from "@/components/sections/partners-section"
 import PricingSection from "@/components/sections/pricing-section"
 import TestimonialsSection from "@/components/sections/testimonials-section"
@@ -44,8 +44,7 @@ export default function IndexPage() {
       {/* 11. Partners (New) */}
       <PartnersSection />
 
-      {/* 12. CTA (Станьте первыми) */}
-      <ReferralSection />
+
 
       {/* 9. Цены (Revived) */}
       <PricingSection />
