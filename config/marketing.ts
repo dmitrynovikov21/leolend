@@ -3,15 +3,15 @@ import { MarketingConfig } from "types"
 export const marketingConfig: MarketingConfig = {
   mainNav: [
     {
-      title: "Pricing",
+      title: "Цены",
       href: "/pricing",
     },
     {
-      title: "Blog",
+      title: "Блог",
       href: "/blog",
     },
     {
-      title: "Documentation",
+      title: "Документация",
       href: "/docs",
     },
   ],

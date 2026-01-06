@@ -81,7 +81,7 @@ export function NavMobile() {
                     onClick={() => setOpen(false)}
                     className="flex w-full font-medium capitalize"
                   >
-                    Admin
+                    Админ
                   </Link>
                 </li>
               ) : null}
@@ -92,7 +92,7 @@ export function NavMobile() {
                   onClick={() => setOpen(false)}
                   className="flex w-full font-medium capitalize"
                 >
-                  Dashboard
+                  Кабинет
                 </Link>
               </li>
             </>
@@ -104,7 +104,7 @@ export function NavMobile() {
                   onClick={() => setOpen(false)}
                   className="flex w-full font-medium capitalize"
                 >
-                  Login
+                  Войти
                 </Link>
               </li>
 
@@ -114,7 +114,7 @@ export function NavMobile() {
                   onClick={() => setOpen(false)}
                   className="flex w-full font-medium capitalize"
                 >
-                  Sign up
+                  Регистрация
                 </Link>
               </li>
             </>

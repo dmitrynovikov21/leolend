@@ -1,7 +1,7 @@
 import localFont from "next/font/local";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
-import { Inter as FontSans, Urbanist } from "next/font/google";
+import { Inter as FontSans, Urbanist, Playfair_Display, Outfit } from "next/font/google";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -11,6 +11,18 @@ export const fontSans = FontSans({
 export const fontUrban = Urbanist({
   subsets: ["latin"],
   variable: "--font-urban",
+})
+
+export const fontOutfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  weight: ["400", "500", "600", "700", "800"],
+})
+
+export const fontSerif = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  weight: ["400", "500", "600"],
 })
 
 export const fontHeading = localFont({

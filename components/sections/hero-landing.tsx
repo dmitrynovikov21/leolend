@@ -1,95 +1,136 @@
-import Link from "next/link";
+"use client"
 
-import { env } from "@/env.mjs";
-import { siteConfig } from "@/config/site";
-import { cn, nFormatter } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { Icons } from "@/components/shared/icons";
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { ChatDemo } from "./chat-demo"
+import { TelegramIcon, WhatsAppIcon, BitrixIcon, AmoCrmIcon } from "@/components/ui/branding/integration-icons"
 
-export default async function HeroLanding() {
-  const { stargazers_count: stars } = await fetch(
-    "https://api.github.com/repos/mickasmt/next-saas-stripe-starter",
-    {
-      ...(env.GITHUB_OAUTH_TOKEN && {
-        headers: {
-          Authorization: `Bearer ${process.env.GITHUB_OAUTH_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }),
-      // data will revalidate every hour
-      next: { revalidate: 3600 },
-    },
-  )
-    .then((res) => res.json())
-    .catch((e) => console.log(e));
+export default function HeroLanding() {
+  const [email, setEmail] = useState("")
+
+  // Typewriter State
+  const [text, setText] = useState("")
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [loopNum, setLoopNum] = useState(0)
+  const [typingSpeed, setTypingSpeed] = useState(150)
+
+  const phrases = [
+    "хаоса в чатах",
+    "повторных вопросов",
+    "поиска документов",
+    "текучки кадров"
+  ]
+
+  useEffect(() => {
+    const handleTyping = () => {
+      const i = loopNum % phrases.length
+      const fullText = phrases[i]
+
+      setText(isDeleting
+        ? fullText.substring(0, text.length - 1)
+        : fullText.substring(0, text.length + 1)
+      )
+
+      // Typing Speed Logic
+      setTypingSpeed(isDeleting ? 40 : 80)
+
+      if (!isDeleting && text === fullText) {
+        setTimeout(() => setIsDeleting(true), 2000) // Pause at end
+      } else if (isDeleting && text === "") {
+        setIsDeleting(false)
+        setLoopNum(loopNum + 1)
+        setTypingSpeed(150) // Pause before typing new word
+      }
+    }
+
+    const timer = setTimeout(handleTyping, typingSpeed)
+    return () => clearTimeout(timer)
+  }, [text, isDeleting, loopNum, phrases, typingSpeed])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("Email submitted:", email)
+  }
 
   return (
-    <section className="space-y-6 py-12 sm:py-20 lg:py-20">
-      <div className="container flex max-w-5xl flex-col items-center gap-5 text-center">
-        <Link
-          href="https://twitter.com/miickasmt/status/1810465801649938857"
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm", rounded: "full" }),
-            "px-4",
-          )}
-          target="_blank"
-        >
-          <span className="mr-3">🎉</span>
-          <span className="hidden md:flex">Introducing&nbsp;</span> Next Auth
-          Roles Template on <Icons.twitter className="ml-2 size-3.5" />
-        </Link>
+    <section className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden">
+      {/* Background Texture - Dot Pattern */}
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:linear-gradient(to_bottom,white,transparent)]" />
 
-        <h1 className="text-balance font-urban text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-[66px]">
-          Kick off with a bang with{" "}
-          <span className="text-gradient_indigo-purple font-extrabold">
-            SaaS Starter
-          </span>
-        </h1>
-
-        <p
-          className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
-          style={{ animationDelay: "0.35s", animationFillMode: "forwards" }}
+      <div className="max-w-7xl mx-auto px-6 w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
         >
-          Build your next project using Next.js 14, Prisma, Neon, Auth.js v5,
-          Resend, React Email, Shadcn/ui, Stripe.
-        </p>
+          {/* Left: Text */}
+          <div className="max-w-xl">
+            {/* Reduced Height Wrapper - Fixed Height to prevent jumping */}
+            <div className="min-h-[120px] sm:min-h-[140px] flex flex-col justify-center">
+              {/* Reduced Font Size */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.15] text-zinc-900 text-left">
+                Освободите свою команду от <br />
+                <span className="text-[#1354FC] whitespace-nowrap">
+                  {text}
+                  <span className="animate-blink ml-1 border-r-4 border-[#1354FC] h-[0.8em] inline-block align-baseline"></span>
+                </span>
+              </h1>
+            </div>
 
-        <div
-          className="flex justify-center space-x-2 md:space-x-4"
-          style={{ animationDelay: "0.4s", animationFillMode: "forwards" }}
-        >
-          <Link
-            href="/pricing"
-            prefetch={true}
-            className={cn(
-              buttonVariants({ size: "lg", rounded: "full" }),
-              "gap-2",
-            )}
-          >
-            <span>Go Pricing</span>
-            <Icons.arrowRight className="size-4" />
-          </Link>
-          <Link
-            href={siteConfig.links.github}
-            target="_blank"
-            rel="noreferrer"
-            className={cn(
-              buttonVariants({
-                variant: "outline",
-                size: "lg",
-                rounded: "full",
-              }),
-              "px-5",
-            )}
-          >
-            <Icons.gitHub className="mr-2 size-4" />
-            <p>
-              <span className="hidden sm:inline-block">Star on</span> GitHub{" "}
-              <span className="font-semibold">{nFormatter(stars)}</span>
+            <p className="text-base text-zinc-500 mt-6 leading-relaxed font-normal max-w-2xl">
+              LeoAgent возьмет рутину на себя. Загрузите базу знаний — и через 5 минут ИИ-сотрудник начнет отвечать строго по вашим регламентам. Без больничных, выходных и ошибок.
             </p>
-          </Link>
-        </div>
+
+            {/* Compact Form */}
+            <form onSubmit={handleSubmit} className="mt-8 flex w-full max-w-sm gap-x-3">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Ваш email"
+                required
+                className="h-11 flex-auto rounded-lg border-0 bg-white/80 px-3.5 shadow-sm ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-2 focus:ring-inset focus:ring-zinc-900 sm:text-sm sm:leading-6 backdrop-blur-sm"
+              />
+              <button
+                type="submit"
+                className="h-11 rounded-lg bg-zinc-900 px-5 text-sm font-semibold text-white shadow-sm hover:bg-zinc-700 transition-colors"
+              >
+                Получить доступ
+              </button>
+            </form>
+
+            {/* Integrations with Icons */}
+            <div className="mt-8 flex items-center gap-6 cursor-default">
+              <div className="group flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity">
+                <TelegramIcon className="w-6 h-6 text-zinc-400" />
+              </div>
+              <div className="group flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity">
+                <WhatsAppIcon className="w-6 h-6 text-zinc-400" />
+              </div>
+              <div className="group flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity">
+                <BitrixIcon className="w-6 h-6 text-zinc-400" />
+              </div>
+              <div className="group flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity">
+                <AmoCrmIcon className="w-6 h-6 text-zinc-400" />
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Chat Widget */}
+          <div className="flex justify-center lg:justify-end w-full">
+            <ChatDemo />
+          </div>
+        </motion.div>
       </div>
+      <style jsx global>{`
+        @keyframes blink {
+          50% { opacity: 0; }
+        }
+        .animate-blink {
+          animation: blink 1s step-end infinite;
+        }
+      `}</style>
     </section>
-  );
+  )
 }

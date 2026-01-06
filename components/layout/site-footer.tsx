@@ -31,7 +31,15 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
             </ul>
           </div>
         ))}
-        <div className="col-span-full flex flex-col items-end sm:col-span-1 md:col-span-2">
+        <div className="col-span-full md:col-span-2">
+          <h4 className="font-semibold text-zinc-900 mb-4">LeoAgent</h4>
+          <div className="space-y-2 text-sm text-zinc-500">
+            <p>г. Москва, ул. Орджоникидзе, 11, подъезд 29</p>
+            <p>+7 (495) 128-54-18</p>
+            <p>info@veo.dev</p>
+          </div>
+        </div>
+        <div className="col-span-full md:col-span-3">
           <NewsletterForm />
         </div>
       </div>

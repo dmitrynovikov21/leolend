@@ -2,6 +2,7 @@
 
 import { useContext } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -16,6 +17,8 @@ import { DocsSearch } from "@/components/docs/search";
 import { ModalContext } from "@/components/modals/providers";
 import { Icons } from "@/components/shared/icons";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
+
+import { Logo } from "@/components/ui/logo";
 
 interface NavBarProps {
   scroll?: boolean;
@@ -39,19 +42,24 @@ export function NavBar({ scroll = false }: NavBarProps) {
 
   return (
     <header
-      className={`sticky top-0 z-40 flex w-full justify-center bg-background/60 backdrop-blur-xl transition-all ${
-        scroll ? (scrolled ? "border-b" : "bg-transparent") : "border-b"
-      }`}
+      className={`sticky top-0 z-40 flex w-full justify-center bg-white/80 backdrop-blur-xl transition-all border-b ${scroll ? (scrolled ? "border-neutral-200" : "border-transparent") : "border-neutral-200"
+        }`}
     >
       <MaxWidthWrapper
         className="flex h-14 items-center justify-between py-4"
         large={documentation}
       >
         <div className="flex gap-6 md:gap-10">
-          <Link href="/" className="flex items-center space-x-1.5">
-            <Icons.logo />
-            <span className="font-urban text-xl font-bold">
-              {siteConfig.name}
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/leoiconlev.png"
+              alt="LeoAgent"
+              width={56}
+              height={56}
+              className="h-14 w-14 object-contain"
+            />
+            <span className="text-3xl font-[800] leading-none tracking-tighter text-zinc-900" style={{ fontFamily: 'var(--font-outfit)' }}>
+              leoagent
             </span>
           </Link>
 
@@ -111,7 +119,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
                 size="sm"
                 rounded="full"
               >
-                <span>Dashboard</span>
+                <span>Кабинет</span>
               </Button>
             </Link>
           ) : status === "unauthenticated" ? (
@@ -122,7 +130,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
               rounded="full"
               onClick={() => setShowSignInModal(true)}
             >
-              <span>Sign In</span>
+              <span>Войти</span>
               <Icons.arrowRight className="size-4" />
             </Button>
           ) : (
