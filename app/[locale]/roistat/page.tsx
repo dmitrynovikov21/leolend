@@ -77,7 +77,7 @@ function HeroSectionNew() {
                                 </button>
                             </form>
                             <div className="mt-4 text-xs text-gray-400">
-                                14 дней бесплатно. Карта не требуется.
+                                Создайте своего ИИ агента
                             </div>
                         </div>
 
@@ -168,8 +168,15 @@ function RoistatHeader() {
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <div className="flex items-center gap-12">
-                    <Link href="/ru/roistat" className="text-2xl font-bold">
-                        <span className="text-[#2d323e]">R<span className="text-[#0077FF]">o</span>istat</span>
+                    <Link href="/ru/roistat" className="flex items-center gap-2">
+                        <Image
+                            src="/leoold.png"
+                            alt="LeoAgent"
+                            width={48}
+                            height={48}
+                            className="h-10 w-10 object-contain"
+                        />
+                        <span className="text-2xl font-bold text-[#2d323e]">Leo<span className="text-[#0077FF]">Agent</span></span>
                     </Link>
 
                     {/* Nav Links */}
@@ -200,7 +207,14 @@ function RoistatHeader() {
 
                 {/* Right Actions */}
                 <div className="flex items-center gap-6">
-                    <span className="hidden xl:block text-[15px] font-semibold text-[#2d323e]">+7 (499) 877-41-27</span>
+                    <Link
+                        href="https://t.me/leoagent_bot"
+                        target="_blank"
+                        className="hidden xl:flex items-center gap-2 text-[15px] font-medium text-[#2d323e] hover:text-[#0077FF] transition-colors"
+                    >
+                        <MessageCircle className="w-4 h-4" />
+                        Чат-бот
+                    </Link>
                     <button className="hidden md:block text-[15px] font-medium text-[#2d323e] hover:text-[#0077FF] transition-colors">
                         Вход
                     </button>
