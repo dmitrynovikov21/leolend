@@ -56,3 +56,44 @@ export function AmoCrmIcon({ className, ...props }: IconProps) {
         </svg>
     )
 }
+
+export function WordIcon({ className, ...props }: IconProps) {
+    return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cn("w-6 h-6", className)} {...props}>
+            <path d="M21.15 2.5h-3.96l-2.6 13.9 -2.57 -13.9h-3.95L5.5 16.4 2.9 2.5H.5l3.5 19h3.76l2.85 -14.6 2.85 14.6h3.75l3.5 -19Z" />
+        </svg>
+    )
+}
+
+export function PdfIcon({ className, ...props }: IconProps) {
+    return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cn("w-6 h-6", className)} {...props}>
+            <path d="M7 6h3a3 3 0 0 1 0 6H7V6zm0 12v-4h2.5a.5.5 0 0 0 0-1H7V7.5h3A1.5 1.5 0 0 1 11.5 9 1.5 1.5 0 0 1 10 10.5H8.5V12h3.5a.5.5 0 0 0 0-1h-2v-4H13V18H7zM20 6h-4.5a.5.5 0 0 0-.5.5v11a.5.5 0 0 0 .5.5H20a.5.5 0 0 0 .5-.5V6.5a.5.5 0 0 0-.5-.5zm-1 9h-2v-1.5h1.5a.5.5 0 0 0 0-1H17V11h2v-1.5h-2V8h2.5a.5.5 0 0 0 0-1h-4v10h4V15z" />
+            <path d="M8.25 3h7.5L20.25 7.5v13.5A2.25 2.25 0 0 1 18 23.25H6A2.25 2.25 0 0 1 3.75 21V5.25A2.25 2.25 0 0 1 6 3h2.25z" fillRule="evenodd" clipRule="evenodd" opacity="0.2" />
+            <path d="M7.5 10.5V6h3c1.657 0 3 1.007 3 2.25S12.157 10.5 10.5 10.5h-3z" fill="currentColor" />
+            <path d="M3.7 3.5H19a1.5 1.5 0 0 1 1.5 1.5v15a1.5 1.5 0 0 1-1.5 1.5H3.7a1.5 1.5 0 0 1-1.5-1.5V5a1.5 1.5 0 0 1 1.5-1.5z" opacity="0.1" />
+            <path d="M7 6v12h3.5v-2H13v-2h-2.5V9.5h3V7.5H7z" fill="currentColor" />
+            {/* Using a simpler PDF path (Adobe generic style) because SVG paths for intricate logos are huge. */}
+            {/* Reverting to a clean 'PDF' text style or 'File' style. Let's use a distinct PDF icon path. */}
+            <path d="M12 2 C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10 S17.52 2 12 2z M17 14.5 h-3 v 1.5 h-1.5 v -1.5 H 10 v 1.5 H 8.5 v -4 h 1.5 v 1 H 12 v -1 h 2 V 14.5 z" fill="none" />
+            <path d="M8 8h8v8H8z" />
+        </svg>
+    )
+}
+
+export function NotionIcon({ className, ...props }: IconProps) {
+    return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cn("w-6 h-6", className)} {...props}>
+            <path d="M4.223 2.658L2.006 4.095c-.322.21-.498.58-.456.963l.63 15.684c.06.845.748 1.487 1.59 1.487h16.276c.928 0 1.666-.78 1.59-1.706L20.8 4.295c-.046-.576-.44-1.056-.994-1.21L6.72 1.608a1.693 1.693 0 0 0-2.497 1.05ZM16.32 17.52h-2.148V8.182l-5.61 9.387H6.556V6.014h2.152v8.59l5.352-8.995h2.26v11.91Z" />
+        </svg>
+    )
+}
+
+export function WebIcon({ className, ...props }: IconProps) {
+    return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={cn("w-6 h-6", className)} {...props}>
+            {/* Simple Globe */}
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+        </svg>
+    )
+}

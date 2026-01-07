@@ -5,14 +5,14 @@ import { Check, GraduationCap } from "lucide-react"
 
 export default function AudienceSection() {
     return (
-        <section className="py-24 bg-white">
+        <section className="py-16 bg-white">
             <div className="max-w-7xl mx-auto px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                     viewport={{ once: true }}
-                    className="mb-12 text-center"
+                    className="mb-20 text-center"
                 >
                     <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900">
                         Кому подходит LeoAgent

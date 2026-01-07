@@ -79,7 +79,7 @@ export default function PricingSection() {
                             </div>
 
                             <div className="mb-6 flex items-baseline">
-                                <span className="text-3xl font-bold tracking-tight">{tier.price}</span>
+                                <span className={`font-bold tracking-tight ${tier.price.length > 10 ? "text-2xl" : "text-3xl"}`}>{tier.price}</span>
                                 {tier.price.includes("₽") && <span className={`text-sm ${tier.dark ? "text-zinc-400" : "text-zinc-500"}`}>/мес</span>}
                             </div>
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
 import { Star } from "lucide-react"
 
 const testimonials = [
@@ -37,6 +37,55 @@ const testimonials = [
 ]
 
 export default function TestimonialsSection() {
+    const scrollRef = useRef<HTMLDivElement>(null)
+    const [isPaused, setIsPaused] = useState(false)
+    const [isDragging, setIsDragging] = useState(false)
+    const [startX, setStartX] = useState(0)
+    const [scrollLeftState, setScrollLeftState] = useState(0)
+
+    useEffect(() => {
+        const container = scrollRef.current
+        if (!container) return
+
+        let animationId: number
+
+        const scroll = () => {
+            if (!isPaused && !isDragging) {
+                if (container.scrollLeft >= container.scrollWidth / 2) {
+                    container.scrollLeft = 0
+                } else {
+                    container.scrollLeft += 0.5
+                }
+            }
+            animationId = requestAnimationFrame(scroll)
+        }
+
+        animationId = requestAnimationFrame(scroll)
+
+        return () => cancelAnimationFrame(animationId)
+    }, [isPaused, isDragging])
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (!scrollRef.current) return
+        setIsDragging(true)
+        setIsPaused(true)
+        setStartX(e.pageX - scrollRef.current.offsetLeft)
+        setScrollLeftState(scrollRef.current.scrollLeft)
+    }
+
+    const handleMouseUp = () => {
+        setIsDragging(false)
+        setIsPaused(false)
+    }
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging || !scrollRef.current) return
+        e.preventDefault()
+        const x = e.pageX - scrollRef.current.offsetLeft
+        const walk = (x - startX) * 2 // Scroll speed multiplier
+        scrollRef.current.scrollLeft = scrollLeftState - walk
+    }
+
     return (
         <section className="py-24 bg-white overflow-hidden relative">
             <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
@@ -45,19 +94,26 @@ export default function TestimonialsSection() {
                 </h2>
             </div>
 
-            {/* Gradient Masks */}
-            <div className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10" />
-            <div className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10" />
-
-            <div className="flex overflow-hidden">
-                <div
-                    className="flex gap-6 animate-marquee hover:[animation-play-state:paused]"
-                    style={{ animationDuration: '40s' }}
-                >
-                    {[...testimonials, ...testimonials].map((item, i) => (
+            <div
+                className="flex overflow-x-auto no-scrollbar cursor-grab active:cursor-grabbing"
+                ref={scrollRef}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => {
+                    setIsPaused(false)
+                    setIsDragging(false)
+                }}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                onTouchStart={() => setIsPaused(true)}
+                onTouchEnd={() => setIsPaused(false)}
+            >
+                <div className="flex gap-6 px-6">
+                    {/* Double the array for seamless loop */}
+                    {[...testimonials, ...testimonials, ...testimonials].map((item, i) => (
                         <div
                             key={i}
-                            className="w-[350px] shrink-0 p-6 rounded-2xl bg-white border border-zinc-200 shadow-sm hover:shadow-md transition-shadow"
+                            className="w-[350px] shrink-0 p-6 rounded-2xl bg-white border border-zinc-200 shadow-sm hover:shadow-md transition-shadow select-none"
                         >
                             <div className="flex flex-col gap-4 h-full">
                                 <div className="flex gap-1">
@@ -88,6 +144,15 @@ export default function TestimonialsSection() {
                     ))}
                 </div>
             </div>
+            <style jsx global>{`
+                .no-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .no-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+            `}</style>
         </section>
     )
 }

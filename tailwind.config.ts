@@ -66,6 +66,7 @@ const config = {
         urban: ["var(--font-urban)", ...fontFamily.sans],
         heading: ["var(--font-heading)", ...fontFamily.sans],
         serif: ["var(--font-serif)", ...fontFamily.serif],
+        outfit: ["var(--font-outfit)", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {

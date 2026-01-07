@@ -27,7 +27,7 @@ export function BlogCard({
       )}
     >
       {data.image && (
-        <div className="w-full overflow-hidden rounded-xl border">
+        <div className="w-full overflow-hidden rounded-2xl border border-zinc-200 shadow-sm">
           <BlurImage
             alt={data.title}
             blurDataURL={data.blurDataURL ?? placeholderBlurhash}

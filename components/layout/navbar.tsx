@@ -50,13 +50,13 @@ export function NavBar({ scroll = false }: NavBarProps) {
         large={documentation}
       >
         <div className="flex gap-6 md:gap-10">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/leoiconlev.png"
+              src="/leoold.png"
               alt="LeoAgent"
               width={56}
               height={56}
-              className="h-14 w-14 object-contain"
+              className="h-12 w-12 object-contain"
             />
             <span className="text-3xl font-[800] leading-none tracking-tighter text-zinc-900" style={{ fontFamily: 'var(--font-outfit)' }}>
               leoagent

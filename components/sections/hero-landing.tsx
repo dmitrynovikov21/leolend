@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { ChatDemo } from "./chat-demo"
-import { TelegramIcon, WhatsAppIcon, BitrixIcon, AmoCrmIcon } from "@/components/ui/branding/integration-icons"
 
 export default function HeroLanding() {
   const [email, setEmail] = useState("")
@@ -31,15 +31,14 @@ export default function HeroLanding() {
         : fullText.substring(0, text.length + 1)
       )
 
-      // Typing Speed Logic
       setTypingSpeed(isDeleting ? 40 : 80)
 
       if (!isDeleting && text === fullText) {
-        setTimeout(() => setIsDeleting(true), 2000) // Pause at end
+        setTimeout(() => setIsDeleting(true), 2000)
       } else if (isDeleting && text === "") {
         setIsDeleting(false)
         setLoopNum(loopNum + 1)
-        setTypingSpeed(150) // Pause before typing new word
+        setTypingSpeed(150)
       }
     }
 
@@ -53,7 +52,7 @@ export default function HeroLanding() {
   }
 
   return (
-    <section className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden pb-24">
       {/* Background Texture - Dot Pattern */}
       <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:linear-gradient(to_bottom,white,transparent)]" />
 
@@ -66,9 +65,8 @@ export default function HeroLanding() {
         >
           {/* Left: Text */}
           <div className="max-w-xl">
-            {/* Reduced Height Wrapper - Fixed Height to prevent jumping */}
+            {/* Fixed Height Wrapper */}
             <div className="min-h-[120px] sm:min-h-[140px] flex flex-col justify-center">
-              {/* Reduced Font Size */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.15] text-zinc-900 text-left">
                 Освободите свою команду от <br />
                 <span className="text-[#1354FC] whitespace-nowrap">
@@ -102,17 +100,17 @@ export default function HeroLanding() {
 
             {/* Integrations with Icons */}
             <div className="mt-8 flex items-center gap-6 cursor-default">
-              <div className="group flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity">
-                <TelegramIcon className="w-6 h-6 text-zinc-400" />
+              <div className="group flex flex-col items-center gap-1 transition-opacity">
+                <Image src="/logos/telegram.svg" alt="Telegram" width={24} height={24} className="grayscale group-hover:grayscale-0 transition-all" />
               </div>
-              <div className="group flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity">
-                <WhatsAppIcon className="w-6 h-6 text-zinc-400" />
+              <div className="group flex flex-col items-center gap-1 transition-opacity">
+                <Image src="/logos/whatsapp.svg" alt="WhatsApp" width={24} height={24} className="grayscale group-hover:grayscale-0 transition-all" />
               </div>
-              <div className="group flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity">
-                <BitrixIcon className="w-6 h-6 text-zinc-400" />
+              <div className="group flex flex-col items-center gap-1 transition-opacity">
+                <Image src="/logos/bitrix24.svg" alt="Bitrix24" width={24} height={24} className="grayscale group-hover:grayscale-0 transition-all" />
               </div>
-              <div className="group flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity">
-                <AmoCrmIcon className="w-6 h-6 text-zinc-400" />
+              <div className="group flex flex-col items-center gap-1 transition-opacity">
+                <Image src="/logos/amocrm.svg" alt="AmoCRM" width={24} height={24} className="grayscale group-hover:grayscale-0 transition-all" />
               </div>
             </div>
           </div>

@@ -1,19 +1,39 @@
 export const BLOG_CATEGORIES: {
   title: string;
-  slug: "news" | "education";
+  slug: "news" | "education" | "кейсы" | "автоматизация" | "гайды" | "обучение";
   description: string;
 }[] = [
-  {
-    title: "News",
-    slug: "news",
-    description: "Updates and announcements from Next SaaS Starter.",
-  },
-  {
-    title: "Education",
-    slug: "education",
-    description: "Educational content about SaaS management.",
-  },
-];
+    {
+      title: "News",
+      slug: "news",
+      description: "Updates and announcements from Next SaaS Starter.",
+    },
+    {
+      title: "Education",
+      slug: "education",
+      description: "Educational content about SaaS management.",
+    },
+    {
+      title: "Кейсы",
+      slug: "кейсы",
+      description: "Реальные истории успеха наших клиентов.",
+    },
+    {
+      title: "Автоматизация",
+      slug: "автоматизация",
+      description: "Статьи о том, как автоматизировать бизнес-процессы.",
+    },
+    {
+      title: "Гайды",
+      slug: "гайды",
+      description: "Пошаговые инструкции по настройке.",
+    },
+    {
+      title: "Обучение",
+      slug: "обучение",
+      description: "Обучающие материалы для сотрудников.",
+    },
+  ];
 
 export const BLOG_AUTHORS = {
   mickasmt: {
@@ -25,5 +45,10 @@ export const BLOG_AUTHORS = {
     name: "shadcn",
     image: "/_static/avatars/shadcn.jpeg",
     twitter: "shadcn",
+  },
+  leoagent: {
+    name: "LeoAgent Team",
+    image: "/leoiconlev.png",
+    twitter: "leoagent",
   },
 };

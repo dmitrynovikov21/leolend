@@ -5,7 +5,7 @@ import { FileText, Check, ChevronDown, CheckCircle2, Bot, MessageCircle, Globe, 
 
 export default function HowItWorks() {
     return (
-        <section className="py-24 bg-white overflow-hidden">
+        <section className="py-16 bg-white overflow-hidden">
             <div className="max-w-[1400px] mx-auto px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}

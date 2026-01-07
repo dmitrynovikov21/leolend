@@ -6,7 +6,7 @@ export function Logo() {
             {/* Icon */}
             <div className="flex items-center justify-center">
                 <Image
-                    src="/leoiconlev.png"
+                    src="/leoold.png"
                     alt="LeoAgent Logo"
                     width={64}
                     height={64}
