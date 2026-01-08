@@ -176,7 +176,9 @@ function RoistatHeader() {
                             height={48}
                             className="h-10 w-10 object-contain"
                         />
-                        <span className="text-2xl font-bold text-[#2d323e]">Leo<span className="text-[#0077FF]">Agent</span></span>
+                        <span className="text-2xl font-[800] leading-none tracking-tighter text-zinc-900 font-outfit">
+                            leoagent
+                        </span>
                     </Link>
 
                     {/* Nav Links */}
