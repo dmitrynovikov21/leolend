@@ -1,184 +1,169 @@
-import { notFound } from "next/navigation";
-import { allPosts } from "contentlayer/generated";
+"use client"
 
-import { Mdx } from "@/components/content/mdx-components";
+import { notFound } from "next/navigation"
+import { useEffect, useState } from "react"
+import { RoistatHeader } from "@/components/roistat/header"
+import { RoistatFooter } from "@/components/roistat/footer"
+import Image from "next/image"
+import Link from "next/link"
+import { ArrowLeft, Calendar, User } from "lucide-react"
+import { getArticleBySlug } from "@/actions/article"
 
-import "@/styles/mdx.css";
-
-import { Metadata } from "next";
-import Link from "next/link";
-
-import { BLOG_CATEGORIES } from "@/config/blog";
-import { getTableOfContents } from "@/lib/toc";
-import {
-  cn,
-  constructMetadata,
-  formatDate,
-  getBlurDataURL,
-  placeholderBlurhash,
-} from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import Author from "@/components/content/author";
-import BlurImage from "@/components/shared/blur-image";
-import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
-import { DashboardTableOfContents } from "@/components/shared/toc";
-
-export async function generateStaticParams() {
-  return allPosts.map((post) => ({
-    slug: post.slugAsParams,
-  }));
+const categoryLabels: Record<string, string> = {
+  GUIDE: "Гайды",
+  BLOG: "Блог",
+  CASE: "Кейсы",
+  NEWS: "Новости",
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata | undefined> {
-  const post = allPosts.find((post) => post.slugAsParams === params.slug);
-  if (!post) {
-    return;
-  }
-
-  const { title, description, image } = post;
-
-  return constructMetadata({
-    title: `${title} – SaaS Starter`,
-    description: description,
-    image,
-  });
-}
-
-export default async function PostPage({
-  params,
-}: {
+interface ArticlePageProps {
   params: {
-    slug: string;
-  };
-}) {
-  const post = allPosts.find((post) => post.slugAsParams === params.slug);
+    slug: string
+  }
+}
 
-  if (!post) {
-    notFound();
+export default function ArticlePage({ params }: ArticlePageProps) {
+  const [article, setArticle] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [notFoundState, setNotFoundState] = useState(false)
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        const result = await getArticleBySlug(params.slug)
+        if (result.success && result.data) {
+          setArticle(result.data)
+        } else {
+          setNotFoundState(true)
+        }
+      } catch (e) {
+        console.error("Failed to fetch article:", e)
+        setNotFoundState(true)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchArticle()
+  }, [params.slug])
+
+  const formatDate = (date: Date | string) => {
+    return new Date(date).toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    })
   }
 
-  const category = BLOG_CATEGORIES.find(
-    (category) => category.slug === post.categories[0],
-  )!;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <RoistatHeader />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        </main>
+        <RoistatFooter />
+      </div>
+    )
+  }
 
-  const relatedArticles =
-    (post.related &&
-      post.related.map(
-        (slug) => allPosts.find((post) => post.slugAsParams === slug)!,
-      )) ||
-    [];
+  if (notFoundState || !article) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <RoistatHeader />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-[#3d4f6f] mb-4">Статья не найдена</h1>
+            <Link href="/ru/blog" className="text-blue-600 hover:underline">
+              ← Вернуться в блог
+            </Link>
+          </div>
+        </main>
+        <RoistatFooter />
+      </div>
+    )
+  }
 
-  const toc = await getTableOfContents(post.body.raw);
-
-  const [thumbnailBlurhash, images] = await Promise.all([
-    getBlurDataURL(post.image),
-    await Promise.all(
-      post.images.map(async (src: string) => ({
-        src,
-        blurDataURL: await getBlurDataURL(src),
-      })),
-    ),
-  ]);
+  // Parse content - handle both string and object formats
+  let contentHtml = ""
+  if (article.content) {
+    if (typeof article.content === "string") {
+      contentHtml = article.content
+    } else if (article.content.html) {
+      contentHtml = article.content.html
+    }
+  }
 
   return (
-    <>
-      <MaxWidthWrapper className="pt-6 md:pt-10">
-        <div className="flex flex-col space-y-4">
-          <div className="flex items-center space-x-4">
-            <Link
-              href={`/blog/category/${category.slug}`}
-              className={cn(
-                buttonVariants({
-                  variant: "outline",
-                  size: "sm",
-                  rounded: "lg",
-                }),
-                "h-8",
-              )}
-            >
-              {category.title}
-            </Link>
-            <time
-              dateTime={post.date}
-              className="text-sm font-medium text-muted-foreground"
-            >
-              {formatDate(post.date)}
-            </time>
+    <div className="min-h-screen bg-white flex flex-col">
+      <RoistatHeader />
+
+      <main className="flex-1 pt-24 pb-20">
+        <article className="max-w-4xl mx-auto px-6">
+          {/* Back Link */}
+          <Link
+            href="/ru/blog"
+            className="inline-flex items-center gap-2 text-[#6b7a90] hover:text-blue-600 transition-colors mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Блог
+          </Link>
+
+          {/* Category & Date */}
+          <div className="flex items-center gap-4 text-sm text-[#6b7a90] mb-4">
+            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-medium">
+              {categoryLabels[article.category] || article.category}
+            </span>
+            <span className="flex items-center gap-1">
+              <Calendar className="w-4 h-4" />
+              {formatDate(article.createdAt)}
+            </span>
           </div>
-          <h1 className="font-heading text-3xl text-foreground sm:text-4xl">
-            {post.title}
+
+          {/* Title */}
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#3d4f6f] mb-6 leading-tight">
+            {article.title}
           </h1>
-          <p className="text-base text-muted-foreground md:text-lg">
-            {post.description}
-          </p>
-          <div className="flex flex-nowrap items-center space-x-5 pt-1 md:space-x-8">
-            {post.authors.map((author) => (
-              <Author username={author} key={post._id + author} />
-            ))}
-          </div>
-        </div>
-      </MaxWidthWrapper>
 
-      <div className="relative">
-        <div className="absolute top-52 w-full border-t" />
-
-        <MaxWidthWrapper className="grid grid-cols-4 gap-10 pt-8 max-md:px-0">
-          <div className="relative col-span-4 mb-10 flex flex-col space-y-8 border-y bg-background md:rounded-xl md:border lg:col-span-3">
-            <BlurImage
-              alt={post.title}
-              blurDataURL={thumbnailBlurhash ?? placeholderBlurhash}
-              className="aspect-[1200/630] border-b object-cover md:rounded-t-xl"
-              width={1200}
-              height={630}
-              priority
-              placeholder="blur"
-              src={post.image}
-              sizes="(max-width: 768px) 770px, 1000px"
-            />
-            <div className="px-[.8rem] pb-10 md:px-8">
-              <Mdx code={post.body.code} images={images} />
-            </div>
-          </div>
-
-          <div className="sticky top-20 col-span-1 mt-52 hidden flex-col divide-y divide-muted self-start pb-24 lg:flex">
-            <DashboardTableOfContents toc={toc} />
-          </div>
-        </MaxWidthWrapper>
-      </div>
-
-      <MaxWidthWrapper>
-        {relatedArticles.length > 0 && (
-          <div className="flex flex-col space-y-4 pb-16">
-            <p className="font-heading text-2xl text-foreground">
-              More Articles
+          {/* Description */}
+          {article.description && (
+            <p className="text-xl text-[#6b7a90] mb-8 leading-relaxed">
+              {article.description}
             </p>
+          )}
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:gap-6">
-              {relatedArticles.map((post) => (
-                <Link
-                  key={post.slug}
-                  href={post.slug}
-                  className="flex flex-col space-y-2 rounded-xl border p-5 transition-colors duration-300 hover:bg-muted/80"
-                >
-                  <h3 className="font-heading text-xl text-foreground">
-                    {post.title}
-                  </h3>
-                  <p className="line-clamp-2 text-[15px] text-muted-foreground">
-                    {post.description}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {formatDate(post.date)}
-                  </p>
-                </Link>
-              ))}
+          {/* Author */}
+          <div className="flex items-center gap-3 pb-8 border-b border-zinc-200 mb-8">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <User className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <div className="font-semibold text-[#3d4f6f]">LeoAgent Team</div>
+              <div className="text-sm text-[#6b7a90]">@leoagent</div>
             </div>
           </div>
-        )}
-      </MaxWidthWrapper>
-    </>
-  );
+
+          {/* Cover Image */}
+          {article.coverImageUrl && (
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-10">
+              <Image
+                src={article.coverImageUrl}
+                alt={article.title}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          )}
+
+          {/* Content */}
+          <div
+            className="prose prose-lg max-w-none prose-headings:text-[#3d4f6f] prose-p:text-[#6b7a90] prose-a:text-blue-600 prose-strong:text-[#3d4f6f]"
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
+          />
+        </article>
+      </main>
+
+      <RoistatFooter />
+    </div>
+  )
 }

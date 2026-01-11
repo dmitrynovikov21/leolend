@@ -78,3 +78,138 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map(name: "verification_tokens")
 }
+
+// ==================== ADMIN PANEL MODELS ====================
+
+enum ArticleCategory {
+  GUIDE
+  BLOG
+  CASE
+  NEWS
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Article {
+  id               String          @id @default(uuid())
+  slug             String          @unique
+  title            String
+  description      String?
+  contentJson      Json?           @map("content_json")
+  category         ArticleCategory @default(BLOG)
+  status           ArticleStatus   @default(DRAFT)
+  isFeaturedOnHome Boolean         @default(false) @map("is_featured_on_home")
+  coverImageUrl    String?         @map("cover_image_url")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  @@map("articles")
+}
+
+model MediaLibrary {
+  id         String   @id @default(uuid())
+  url        String
+  promptUsed String?  @map("prompt_used")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("media_library")
+}
+
+model AgentSettings {
+  id                String   @id @default("singleton")
+  systemInstruction String?  @db.Text @map("system_instruction")
+  modelId           String   @default("claude-sonnet-4-5-20250929") @map("model_id")
+  temperature       Float    @default(0.7)
+  maxTokens         Int      @default(4096) @map("max_tokens")
+  ragFiles          Json     @default("[]") @map("rag_files")
+  isActive          Boolean  @default(true) @map("is_active")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("agent_settings")
+}
+
+// ==================== LEADS MODEL ====================
+model Lead {
+  id        String   @id @default(uuid())
+  email     String
+  name      String?
+  phone     String?
+  comment   String?
+  status    String   @default("NEW") // NEW, CONTACTED, CLOSED
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("leads")
+}
+
+// ==================== ANALYTICS MODELS ====================
+enum EventType {
+  PAGE_VIEW
+  CLICK
+  SCROLL
+  FORM_SUBMIT
+  WIDGET_OPEN
+  WIDGET_CLOSE
+  SESSION_START
+  SESSION_END
+}
+
+model Visitor {
+  id           String   @id @default(uuid())
+  fingerprint  String?
+  firstVisitAt DateTime @default(now()) @map("first_visit_at")
+  lastVisitAt  DateTime @default(now()) @map("last_visit_at")
+  totalVisits  Int      @default(1) @map("total_visits")
+  deviceType   String?  @map("device_type")
+  browser      String?
+  os           String?
+  country      String?
+  city         String?
+  events       AnalyticsEvent[]
+
+  @@map("visitors")
+}
+
+model AnalyticsEvent {
+  id          String    @id @default(uuid())
+  visitorId   String    @map("visitor_id")
+  visitor     Visitor   @relation(fields: [visitorId], references: [id])
+  
+  eventType   EventType @map("event_type")
+  eventName   String    @map("event_name")
+  pageUrl     String    @map("page_url")
+  referrer    String?
+  ipAddress   String?   @map("ip_address")
+  country     String?
+  city        String?
+  
+  // Session tracking
+  sessionDuration Int?  @map("session_duration") // seconds
+  scrollDepth     String? @map("scroll_depth") // "hero,pricing,contact,footer"
+  telegramMsgId   Int?  @map("telegram_msg_id") // for message editing
+  
+  utmSource   String?   @map("utm_source")
+  utmMedium   String?   @map("utm_medium")
+  utmCampaign String?   @map("utm_campaign")
+  
+  metadata    Json?
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("analytics_events")
+}
+
+// ==================== SUBSCRIBERS MODEL ====================
+model Subscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  source    String?  // "footer", "popup", "hero"
+  ipAddress String?  @map("ip_address")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("subscribers")
+}
+

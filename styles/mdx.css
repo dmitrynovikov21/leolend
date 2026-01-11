@@ -13,6 +13,23 @@ code[data-theme*=" "] span {
   }
 }
 
+/* Fix code blocks in prose - ensure readable text */
+.prose pre {
+  @apply bg-zinc-900 text-zinc-100 !important;
+}
+
+.prose pre code {
+  @apply text-zinc-100 !important;
+}
+
+.prose pre code span {
+  color: inherit !important;
+}
+
+.prose :not(pre) > code {
+  @apply bg-zinc-100 text-zinc-800 px-1.5 py-0.5 rounded text-sm;
+}
+
 [data-rehype-pretty-code-figure] {
   @apply relative mt-6 mb-4;
 }

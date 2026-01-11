@@ -1,0 +1,302 @@
+"use client"
+
+import { useState } from "react"
+import { ArrowLeft, Save, Sparkles, Loader2, X } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { toast } from "sonner"
+import { TelegraphEditor } from "@/components/editor/telegraph-editor"
+import { type Editor as TiptapEditor } from "@tiptap/core"
+import { createArticle } from "@/actions/article"
+import { useRouter } from "next/navigation"
+
+export default function NewArticlePage() {
+    const router = useRouter()
+    const [title, setTitle] = useState("")
+    const [slug, setSlug] = useState("")
+    const [description, setDescription] = useState("")
+    const [content, setContent] = useState<any>(null)
+    const [editorRef, setEditorRef] = useState<TiptapEditor | null>(null)
+    const [category, setCategory] = useState("BLOG")
+    const [status, setStatus] = useState("DRAFT")
+    const [isFeatured, setIsFeatured] = useState(false)
+    const [coverImage, setCoverImage] = useState("")
+    const [isSaving, setIsSaving] = useState(false)
+
+    // AI Image Generation
+    const [imagePrompt, setImagePrompt] = useState("")
+    const [generatedImages, setGeneratedImages] = useState<string[]>([])
+    const [isGenerating, setIsGenerating] = useState(false)
+
+    const handleTitleChange = (value: string) => {
+        setTitle(value)
+        const transliterate = (str: string) => {
+            const ru: { [key: string]: string } = {
+                'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
+                'е': 'e', 'ё': 'e', 'ж': 'zh', 'з': 'z', 'и': 'i',
+                'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+                'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+                'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch',
+                'ш': 'sh', 'щ': 'shch', 'ы': 'y', 'э': 'e', 'ю': 'yu',
+                'я': 'ya', 'ъ': '', 'ь': ''
+            };
+
+            return str.split('').map(char => {
+                const lowerChar = char.toLowerCase();
+                return ru[lowerChar] !== undefined ? ru[lowerChar] : char;
+            }).join('').toLowerCase().replace(/[^\w\s-]/g, "").replace(/[-\s]+/g, "-").replace(/^-+|-+$/g, "");
+        }
+        setSlug(transliterate(value))
+    }
+
+    const handleGenerateImages = async () => {
+        if (!imagePrompt.trim()) {
+            toast.error("Введите промпт для генерации")
+            return
+        }
+        setIsGenerating(true)
+        await new Promise((r) => setTimeout(r, 1500))
+        setGeneratedImages([
+            "https://placehold.co/800x600/6366f1/ffffff?text=Image+1",
+            "https://placehold.co/800x600/8b5cf6/ffffff?text=Image+2",
+            "https://placehold.co/800x600/a855f7/ffffff?text=Image+3",
+        ])
+        setIsGenerating(false)
+        toast.success("Изображения сгенерированы!")
+    }
+
+    const handleSetCover = (url: string) => {
+        setCoverImage(url)
+        toast.success("Обложка установлена")
+    }
+
+    const handleInsertImage = (url: string) => {
+        if (editorRef) {
+            editorRef.chain().focus().setImage({ src: url }).run()
+            toast.success("Изображение вставлено")
+        }
+    }
+
+    const handleSave = async () => {
+        if (!title.trim()) {
+            toast.error("Заголовок обязателен")
+            return
+        }
+        if (!slug.trim()) {
+            toast.error("URL (slug) обязателен")
+            return
+        }
+
+        const finalContent = editorRef ? { html: editorRef.getHTML() } : content
+
+        setIsSaving(true)
+        try {
+            const result = await createArticle({
+                title,
+                slug,
+                description,
+                contentJson: finalContent,
+                category: category as "GUIDE" | "BLOG" | "CASE" | "NEWS",
+                status: status as "DRAFT" | "PUBLISHED",
+                isFeaturedOnHome: isFeatured,
+                coverImageUrl: coverImage,
+            })
+
+            if (result.success && result.data) {
+                toast.success("Статья создана!")
+                router.push(`/ru/adminlend/blog/${result.data.id}`)
+            } else {
+                throw new Error(result.error || "Ошибка создания статьи")
+            }
+        } catch (error: any) {
+            toast.error(error.message || "Ошибка сохранения")
+            console.error(error)
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    return (
+        <div className="flex h-[calc(100vh-64px)]">
+            {/* Main Editor Area */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b border-zinc-200 bg-white">
+                    <div className="flex items-center gap-4">
+                        <Link href="/ru/adminlend/blog">
+                            <Button variant="ghost" size="icon">
+                                <ArrowLeft className="w-5 h-5" />
+                            </Button>
+                        </Link>
+                        <div className="flex-1">
+                            <Input
+                                value={title}
+                                onChange={(e) => handleTitleChange(e.target.value)}
+                                placeholder="Заголовок статьи..."
+                                className="text-xl font-bold border-0 shadow-none focus-visible:ring-0 p-0 h-auto"
+                            />
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Select value={status} onValueChange={setStatus}>
+                            <SelectTrigger className="w-[140px]">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="DRAFT">Черновик</SelectItem>
+                                <SelectItem value="PUBLISHED">Опубликовано</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <Button onClick={handleSave} disabled={isSaving} className="gap-2">
+                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                            Сохранить
+                        </Button>
+                    </div>
+                </div>
+
+                {/* Cover Image */}
+                {coverImage && (
+                    <div className="relative h-48 bg-zinc-100 border-b border-zinc-200">
+                        <img src={coverImage} alt="Cover" className="w-full h-full object-cover" />
+                        <Button
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2"
+                            onClick={() => setCoverImage("")}
+                        >
+                            <X className="w-4 h-4" />
+                        </Button>
+                    </div>
+                )}
+
+                {/* Telegraph Editor - Full Height */}
+                <div className="flex-1 overflow-hidden border border-zinc-200 rounded-lg m-4">
+                    <TelegraphEditor
+                        initialValue={content}
+                        onChange={setContent}
+                        onEditorReady={setEditorRef}
+                    />
+                </div>
+            </div>
+
+            {/* Right Sidebar */}
+            <div className="w-80 border-l border-zinc-200 bg-white overflow-auto">
+                {/* Settings */}
+                <div className="p-4 border-b border-zinc-200">
+                    <h3 className="font-semibold text-zinc-900 mb-4">Настройки</h3>
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label className="text-xs text-zinc-500">URL (slug)</Label>
+                            <Input
+                                value={slug}
+                                onChange={(e) => setSlug(e.target.value)}
+                                placeholder="url-stati"
+                                className="text-sm"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-xs text-zinc-500">Описание (SEO)</Label>
+                            <Textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Краткое описание..."
+                                rows={2}
+                                className="text-sm"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-xs text-zinc-500">Категория</Label>
+                            <Select value={category} onValueChange={setCategory}>
+                                <SelectTrigger className="text-sm">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="GUIDE">Гайд</SelectItem>
+                                    <SelectItem value="BLOG">Блог</SelectItem>
+                                    <SelectItem value="CASE">Кейс</SelectItem>
+                                    <SelectItem value="NEWS">Новости</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex items-center justify-between py-2">
+                            <Label className="text-sm">На главной</Label>
+                            <Switch checked={isFeatured} onCheckedChange={setIsFeatured} />
+                        </div>
+                    </div>
+                </div>
+
+                {/* AI Images */}
+                <div className="p-4">
+                    <h3 className="font-semibold text-zinc-900 mb-4 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-purple-500" />
+                        AI Изображения
+                    </h3>
+
+                    <div className="space-y-3">
+                        <Textarea
+                            value={imagePrompt}
+                            onChange={(e) => setImagePrompt(e.target.value)}
+                            placeholder="Опишите изображение..."
+                            rows={2}
+                            className="text-sm"
+                        />
+                        <Button
+                            onClick={handleGenerateImages}
+                            disabled={isGenerating}
+                            className="w-full gap-2"
+                            size="sm"
+                        >
+                            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                            {isGenerating ? "Генерация..." : "Сгенерировать"}
+                        </Button>
+                    </div>
+
+                    {generatedImages.length > 0 && (
+                        <div className="mt-4 space-y-2">
+                            <p className="text-xs text-zinc-500">Перетащите или нажмите:</p>
+                            {generatedImages.map((url, i) => (
+                                <div
+                                    key={i}
+                                    className="relative group rounded-lg overflow-hidden border border-zinc-200 cursor-grab"
+                                    draggable="true"
+                                    onDragStart={(e) => {
+                                        e.dataTransfer.setData('text/image-url', url)
+                                    }}
+                                >
+                                    <img src={url} alt={`Generated ${i + 1}`} className="w-full h-20 object-cover" />
+                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                        <Button size="sm" variant="secondary" onClick={() => handleInsertImage(url)} className="text-xs h-7">
+                                            Вставить
+                                        </Button>
+                                        <Button size="sm" variant="secondary" onClick={() => handleSetCover(url)} className="text-xs h-7">
+                                            Обложка
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    )
+}

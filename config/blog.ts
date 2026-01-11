@@ -48,7 +48,7 @@ export const BLOG_AUTHORS = {
   },
   leoagent: {
     name: "LeoAgent Team",
-    image: "/leoiconlev.png",
+    image: "/leoold.png",
     twitter: "leoagent",
   },
 };

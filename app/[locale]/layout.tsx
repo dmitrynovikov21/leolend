@@ -9,8 +9,11 @@ import { getMessages } from 'next-intl/server';
 import { cn, constructMetadata } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@/components/analytics";
+import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 import ModalProvider from "@/components/modals/providers";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { ChatWidget } from "@/components/chat-widget"
+import { ScrollToTopButton } from "@/components/scroll-to-top";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -62,11 +65,15 @@ export default async function RootLayout({ children, params: { locale } }: RootL
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
-            enableSystem
+            forcedTheme="light"
             disableTransitionOnChange
           >
             <NextIntlClientProvider messages={messages}>
-              <ModalProvider>{children}</ModalProvider>
+              <AnalyticsProvider>
+                <ModalProvider>{children}</ModalProvider>
+              </AnalyticsProvider>
+              <ChatWidget />
+              <ScrollToTopButton />
               <Analytics />
               <Toaster richColors closeButton />
               <TailwindIndicator />
